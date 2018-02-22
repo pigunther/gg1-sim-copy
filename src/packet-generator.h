@@ -1,8 +1,9 @@
 #pragma once
 
 #include "simulator.h"
-#include "queue.h"
+#include "server.h"
 #include "packet.h"
+#include <memory>
 
 template <typename ArrivalDistribution, typename ServiceDistribution>
 class PacketGenerator
@@ -11,6 +12,7 @@ class PacketGenerator
   using ServiceParamType = typename ServiceDistribution::param_type;
 public:
   PacketGenerator (const ArrivalParamType&, const ServiceParamType&);
+  void SetServer (std::shared_ptr<Server> server);
   void Start ();
   void NewPacket ();
   void PacketServed ();
@@ -18,7 +20,7 @@ public:
 private:
   ArrivalDistribution m_arrivalGen;
   ServiceDistribution m_serviceGen;
-  Queue queue;  
+  std::shared_ptr<Server> m_server;  
 };
 
 template <typename ArrivalDistribution, typename ServiceDistribution>
@@ -26,6 +28,13 @@ PacketGenerator<ArrivalDistribution, ServiceDistribution>::PacketGenerator (cons
 : m_arrivalGen (arrivalParams),
   m_serviceGen (serviceParams)
 {
+}
+
+template <typename ArrivalDistribution, typename ServiceDistribution>
+void
+PacketGenerator<ArrivalDistribution, ServiceDistribution>::SetServer (std::shared_ptr<Server> server)
+{
+  m_server = server;
 }
 
 template <typename ArrivalDistribution, typename ServiceDistribution>
@@ -41,7 +50,7 @@ void
 PacketGenerator<ArrivalDistribution, ServiceDistribution>::NewPacket ()
 {
   std::shared_ptr<Packet> p (new Packet (Simulator::Now (), m_serviceGen (Simulator::Engine ())));
-  queue.AddPacket (p);
+  m_server->AddPacket (p);
   std::function <void ()> callback = std::bind (&PacketGenerator<ArrivalDistribution, ServiceDistribution>::NewPacket, this); 
   Simulator::Schedule (m_arrivalGen (Simulator::Engine ()), callback);
 }

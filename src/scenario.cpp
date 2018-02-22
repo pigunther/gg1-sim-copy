@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 #include "packet-generator.h"
 #include "simulator.h"
 
@@ -16,12 +17,15 @@ int main(int argc, char** argv)
 
   std::exponential_distribution<double>::param_type params1 (lambda);
   std::exponential_distribution<double>::param_type params2 (mu);
-  PacketGenerator<std::exponential_distribution<double>, std::exponential_distribution<double>> gen(params1, params2);
+  PacketGenerator<std::exponential_distribution<double>, std::exponential_distribution<double>> packetGen(params1, params2);
+  
+  std::shared_ptr<Server> server (new Server ());
+  packetGen.SetServer (server);  
   
   Simulator sim;
   sim.SetStop (simTime);
   sim.SetSeed (seed);
 
-  gen.Start ();
+  packetGen.Start ();
   sim.Run ();
 }
