@@ -22,8 +22,8 @@ def executeProgram(run, args):
             shell=True, stdout = subprocess.PIPE).stdout.read().split(" ")
   return float(result[1])
 
-def confidenceInterval (serviceTimes, alpha, n):
-  return np.sqrt(np.var(serviceTimes, ddof=1)) * stats.t.ppf(1-alpha/2, n-1) 
+def confidenceInterval (serviceTimes, alpha):
+  return np.sqrt(np.var(serviceTimes, ddof=1)) / np.sqrt(len(serviceTimes)) * stats.t.ppf(1-alpha/2, len(serviceTimes)-1) 
 
 def main():
   args = parseArguments()
@@ -35,7 +35,7 @@ def main():
       serviceTimes += [executeProgram(run, args)]
   
     run = 2
-    while (confidenceInterval (serviceTimes, args.alpha, run) > args.beta):
+    while (confidenceInterval (serviceTimes, args.alpha) > args.beta):
       run = run + 1  
       serviceTimes += [executeProgram(run, args)]
   elif (args.runMode == "static"):
@@ -44,7 +44,7 @@ def main():
   else:
     print ("Wrong runMode, variants: static dynamic")
     exit (1)
-  print ("{} {} {}".format (args.lambd / args.mu, np.mean(serviceTimes), confidenceInterval(serviceTimes, args.alpha, run)) )
+  print ("{} {} {}".format (args.lambd / args.mu, np.mean(serviceTimes), confidenceInterval(serviceTimes, args.alpha)) )
 
 if __name__ == "__main__":
   main()
