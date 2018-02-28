@@ -43,29 +43,32 @@ if (model == 'm') :
     #todo для модели M/M/1/k
     # yplot = (ed-r)*r/(ed-r**(k+2))*(r**k+(ed-r**k*(k*(ed-r)+ed))/(ed-r)**2)+1
     yplot = (1-r)*r/(1-r**(k+2))*(r**k+(1-r**k*(k*(1-r)+1))/(1-r)**2)+1
-
     ref = r**(k+1)*(ed-r)/(ed-r**(k+2))
+
 else :
     #todo формулы для модели M/D/1/k
     #yplot = (ed-r)*r/(ed-r**(k+2))*(r**k+(ed-r**k*(k*(ed-r)+ed))/(ed-r)**2)+1
     yplot = 1+r/(2*(1-r))
     ref = r**(k+1)*(1-r)/(1-r**(k+2))
 
+
 if (service == "s"):
     plt.plot(r, yplot, marker = 'None', linestyle = '-', color = 'g', label = 'analytics')
     plt.errorbar(df[0], df[1], df[2], marker = 'x', linestyle = 'None', color = 'k', label = 'simulation')
+    plt.ylabel('Average service time')
 
 else: #refused
     plt.plot(r, ref, marker = 'None', linestyle = '-', color = 'g', label = 'analytics')
     plt.errorbar(df[0], df[3], df[4], marker = 'x', linestyle = 'None', color = 'k', label = 'simulation')
+    plt.ylabel('Part of refused packets')
 
 
 
 
 plt.xlabel(r'$\lambda / \mu$')
-plt.ylabel('Average service time')
-#plt.ylabel('Average waiting time')
 
+#plt.ylabel('Average waiting time')
+plt.title('Model m/{}/1/{}'.format(model, k))
 plt.grid()
 plt.legend(loc='best')
 plt.savefig(file_name)
