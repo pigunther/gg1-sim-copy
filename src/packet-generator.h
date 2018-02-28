@@ -12,6 +12,7 @@ class PacketGenerator {
   using ServiceParamType = typename ServiceDistribution::param_type;
 public:
   PacketGenerator (const ArrivalParamType&, const ServiceParamType&);
+//    void SetParams(const ArrivalParamType&, const ServiceParamType&);
   void SetServer (std::shared_ptr<Server> server);
   void Start ();
   void NewPacket ();
@@ -28,6 +29,13 @@ PacketGenerator<ArrivalDistribution, ServiceDistribution>::PacketGenerator (cons
 : m_arrivalGen (arrivalParams),
   m_serviceGen (serviceParams)
 {}
+
+//template <typename ArrivalDistribution, typename ServiceDistribution>
+//void PacketGenerator<ArrivalDistribution, ServiceDistribution>::SetParams(const ArrivalParamType& arrivalParams, const ServiceParamType& serviceParams)
+//{
+//  m_arrivalGen = arrivalParams;
+//  m_serviceGen = serviceParams;
+//}
 
 template <typename ArrivalDistribution, typename ServiceDistribution>
 void
