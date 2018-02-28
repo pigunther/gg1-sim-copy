@@ -1,7 +1,6 @@
 #pragma once
 
-class Packet 
-{
+class Packet {
 public:
   Packet (double arrivalTime, double serviceTime);
   double GetArrivalTime ();

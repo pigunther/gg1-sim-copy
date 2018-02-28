@@ -4,10 +4,10 @@
 #include "server.h"
 #include "packet.h"
 #include <memory>
+#include <iostream>
 
 template <typename ArrivalDistribution, typename ServiceDistribution>
-class PacketGenerator
-{
+class PacketGenerator {
   using ArrivalParamType = typename ArrivalDistribution::param_type;
   using ServiceParamType = typename ServiceDistribution::param_type;
 public:
@@ -27,8 +27,7 @@ template <typename ArrivalDistribution, typename ServiceDistribution>
 PacketGenerator<ArrivalDistribution, ServiceDistribution>::PacketGenerator (const ArrivalParamType& arrivalParams, const ServiceParamType& serviceParams)
 : m_arrivalGen (arrivalParams),
   m_serviceGen (serviceParams)
-{
-}
+{}
 
 template <typename ArrivalDistribution, typename ServiceDistribution>
 void
@@ -38,20 +37,19 @@ PacketGenerator<ArrivalDistribution, ServiceDistribution>::SetServer (std::share
 }
 
 template <typename ArrivalDistribution, typename ServiceDistribution>
-void
-PacketGenerator<ArrivalDistribution, ServiceDistribution>::Start ()
-{
-  std::function <void ()> callback = std::bind (&PacketGenerator<ArrivalDistribution, ServiceDistribution>::NewPacket, this); 
-  Simulator::Schedule (m_arrivalGen (Simulator::Engine ()), callback);
+void PacketGenerator<ArrivalDistribution, ServiceDistribution>::Start () {
+//  std::cout << "in Start " << std::endl;
+//  std::cout << m_arrivalGen << " m_arrivalGen" << std::endl;
+//    std::cout << m_arrivalGen(Simulator::Engine ()) << " m_arrivalGenSim" << std::endl;
+  std::function <void ()> callback = std::bind (&PacketGenerator<ArrivalDistribution, ServiceDistribution>::NewPacket, this);
+  Simulator::Schedule (m_arrivalGen(Simulator::Engine ()), callback);
 }
 
 template <typename ArrivalDistribution, typename ServiceDistribution>
-void
-PacketGenerator<ArrivalDistribution, ServiceDistribution>::NewPacket ()
-{
+void PacketGenerator<ArrivalDistribution, ServiceDistribution>::NewPacket () {
   std::shared_ptr<Packet> p (new Packet (Simulator::Now (), m_serviceGen (Simulator::Engine ())));
   m_server->AddPacket (p);
-  std::function <void ()> callback = std::bind (&PacketGenerator<ArrivalDistribution, ServiceDistribution>::NewPacket, this); 
+  std::function <void ()> callback = std::bind (&PacketGenerator<ArrivalDistribution, ServiceDistribution>::NewPacket, this);
   Simulator::Schedule (m_arrivalGen (Simulator::Engine ()), callback);
 }
 

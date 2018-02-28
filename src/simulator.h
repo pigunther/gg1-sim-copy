@@ -4,8 +4,7 @@
 #include <map>
 #include <random>
 
-class Simulator 
-{
+class Simulator {
 public:
   Simulator ();
   static void Schedule (double time, std::function<void ()> handler);

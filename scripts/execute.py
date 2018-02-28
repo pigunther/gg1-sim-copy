@@ -11,6 +11,7 @@ def parseArguments():
   parser.add_argument("lambd", type=float)
   parser.add_argument("mu", type=float)
   parser.add_argument("simtime", type=float)
+  parser.add_argument("k", type=float)
   parser.add_argument("--alpha", type=float, default=0.01)
   parser.add_argument("--beta", type=float, default=0.1)
   parser.add_argument("--runMode", type=str, default='static')
@@ -18,7 +19,8 @@ def parseArguments():
   return parser.parse_args()
 
 def executeProgram(run, args):
-  result = subprocess.Popen("../src/scenario {} {} {} {}".format(run, args.lambd, args.mu, args.simtime), 
+  #print(run, args.lambd, args.mu, args.simtime, args.k)
+  result = subprocess.Popen("../src/scenario {} {} {} {} {}".format(run, args.lambd, args.mu, args.simtime, args.k),
             shell=True, stdout = subprocess.PIPE).stdout.read().split(" ")
   return float(result[1])
 

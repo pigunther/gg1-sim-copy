@@ -3,12 +3,12 @@
 #include "queue.h"
 #include <memory>
 
-class Server 
-{
+class Server {
 public:
-  Server ();
+//  Server ();
+  Server(std::shared_ptr<Queue>& q);
   void AddPacket (std::shared_ptr<Packet> packet);
   
 private:
-  Queue m_queue;
+    std::shared_ptr<Queue>&  m_queue;
 };
