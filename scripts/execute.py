@@ -24,7 +24,7 @@ def executeProgram(run, args):
   result = subprocess.Popen("../src/scenario {} {} {} {} {} {}".format(run, args.lambd, args.mu, args.simtime, args.k, args.model),
             shell=True, stdout = subprocess.PIPE).stdout.read().split(" ")
   #return float(result[1]) #for total served packets
-  return [float(result[1]), float(result[5])]  #return serveed packets and refused part
+  return [float(result[1]), float(result[5]), float(result[2])]  #return serveed packets and refused part
 
 
 def confidenceInterval (serviceTimes, alpha):
@@ -36,6 +36,7 @@ def main():
 
   serviceTimes = []
   refusedPart = []
+  waitingTime = []
   exPr_return = []
   
   if (args.runMode == "dynamic"):
@@ -57,12 +58,15 @@ def main():
       exPr_return = executeProgram(run, args)
       serviceTimes += [exPr_return[0]]
       refusedPart += [exPr_return[1]]
+      waitingTime += [exPr_return[2]]
       #serviceTimes = [0]
       #refusedPart = [0]
   else:
     print ("Wrong runMode, variants: static dynamic")
     exit (1)
-  print ("{} {} {} {} {}".format (args.lambd / args.mu, np.mean(serviceTimes), confidenceInterval(serviceTimes, args.alpha), np.mean(refusedPart), confidenceInterval(refusedPart, args.alpha)))
+  print ("{} {} {} {} {} {} {}".format (args.lambd / args.mu, np.mean(serviceTimes), confidenceInterval(serviceTimes, args.alpha), np.mean(refusedPart), confidenceInterval(refusedPart, args.alpha),  np.mean(waitingTime), confidenceInterval(waitingTime, args.alpha)))
 
 if __name__ == "__main__":
   main()
+
+
