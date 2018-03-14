@@ -25,7 +25,6 @@ void Queue::AddPacket (std::shared_ptr<Packet> packet) {
   //comment: queue size
     m_allPackets++;
 
-    //todo зачем пушить в пустую очередь что-то?
     if (m_queue.size() <= k) {
         m_queue.push_back(packet);
     } else {
@@ -34,9 +33,9 @@ void Queue::AddPacket (std::shared_ptr<Packet> packet) {
 
     if (m_queue.size () == 1) {
   //if (m_queue.size () < k+1) {
-    std::function <void ()> callback = std::bind (&Queue::RemoveFirstPacket, this); 
-    Simulator::Schedule (packet->GetServiceTime (), callback);
-  }
+      std::function <void ()> callback = std::bind (&Queue::RemoveFirstPacket, this);
+      Simulator::Schedule (packet->GetServiceTime (), callback);
+    }
 }
 
 void Queue::RemoveFirstPacket () {
@@ -77,8 +76,9 @@ Queue::~Queue () {
     std::cout << "Utilization: " << m_stats.totalBusyTime / Simulator::Now () << std::endl;
     std::cout << "===========================================================" << std::endl;
   } else {
-    std::cout << m_stats.totalServedPackets << ' ' << m_stats.sumServiceTime / m_stats.totalServedPackets << ' ' 
-      << m_stats.sumWaitingTime / m_stats.totalServedPackets << ' ' << avgQueueSize
+    std::cout << m_stats.totalServedPackets << ' '
+              << m_stats.sumServiceTime / m_stats.totalServedPackets << ' '
+              << m_stats.sumWaitingTime / m_stats.totalServedPackets << ' ' << avgQueueSize
               << ' ' << m_stats.totalBusyTime / Simulator::Now ()
               << ' ' << ((double)m_refusedPackets)/((double)m_allPackets) << std::endl;
 
